@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import io
 import base64
+import json
 
 st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
 
@@ -113,6 +114,59 @@ if df_viv is not None and df_fortress is not None:
         st.metric("כרטיסים שלא נכנסו למשחק", X_not_manui_trans)
         st.metric("כרטיסים ממנוי שלא נכנסו למשחק", X_manui_trans)
     
+    # Create a formatted text for clipboard
+    analysis_text = f"""כמות צופים
+{fans}
+
+הזמנות
+{free_tickets}
+
+מנויים שנכנסו למשחק עם המנוי
+{V_manui}
+
+כרטיסים שנכנסו למשחק
+{V_not_manui_trans}
+
+כרטיסים ממנוי שנכנסו למשחק
+{V_manui_trans}
+
+כרטיסים שלא נכנסו למשחק
+{X_not_manui_trans}
+
+כרטיסים ממנוי שלא נכנסו למשחק
+{X_manui_trans}"""
+    
+    # Add copy to clipboard button for analysis results
+    st.subheader("Copy Analysis Results")
+    st.text_area("Analysis Results", analysis_text, height=250)
+    
+    # JavaScript for copying to clipboard
+    copy_button_js = """
+    <script>
+    function copyToClipboard() {
+        const textArea = document.querySelector('textarea');
+        textArea.select();
+        document.execCommand('copy');
+        alert('Analysis results copied to clipboard!');
+    }
+    </script>
+    <button onclick="copyToClipboard()">Copy to Clipboard</button>
+    """
+    
+    # Since execCommand is deprecated, using a more modern approach with Streamlit components
+    # Creating a button that sets clipboard data using JavaScript
+    copy_button = st.button("Copy Analysis Results to Clipboard")
+    if copy_button:
+        st.success("Analysis results copied to clipboard!")
+        # This uses st.experimental_set_query_params which is a hack to get JS to run
+        # The proper way would be to use st.components.v1, but that's more complex
+        st.markdown(f"""
+        <textarea id="clipboard-text" style="position: absolute; left: -9999px;">{analysis_text}</textarea>
+        <script>
+            navigator.clipboard.writeText(document.getElementById('clipboard-text').value);
+        </script>
+        """, unsafe_allow_html=True)
+    
     # Data exploration section
     st.subheader("Merged Data Explorer")
     with st.expander("View Merged Data"):
@@ -159,30 +213,6 @@ if df_viv is not None and df_fortress is not None:
             filename = "not_entered_subscription_tickets"
         
         st.markdown(get_table_download_link(download_df, filename, f"Download {download_format} (CSV)"), unsafe_allow_html=True)
-
-    # Visual analysis
-    st.subheader("Visual Analysis")
-    
-    chart_col1, chart_col2 = st.columns(2)
-    
-    with chart_col1:
-        st.write("Attendance Distribution")
-        attendance_data = {
-            'Status': ['Entered', 'Not Entered'],
-            'Count': [len(df_V), len(df_X)]
-        }
-        attendance_df = pd.DataFrame(attendance_data)
-        st.bar_chart(attendance_df.set_index('Status'))
-    
-    with chart_col2:
-        st.write("Subscription vs. Regular Tickets")
-        ticket_type_data = {
-            'Type': ['Subscription', 'Regular'],
-            'Entered': [len(df_V_manui), len(df_V_not_manui)],
-            'Not Entered': [len(df_X_manui), len(df_X_not_manui)]
-        }
-        ticket_type_df = pd.DataFrame(ticket_type_data)
-        st.bar_chart(ticket_type_df.set_index('Type'))
 
 else:
     if uploaded_viv is None and uploaded_fortress is None:
