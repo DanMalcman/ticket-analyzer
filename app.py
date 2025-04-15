@@ -135,10 +135,41 @@ if df_viv is not None and df_fortress is not None:
 כרטיסים ממנוי שלא נכנסו למשחק
 {X_manui_trans}"""
     
-    # Streamlit-friendly way to handle clipboard copying
-    st.subheader("Analysis Results for Copying")
-    st.text_area("Copy this text:", analysis_text, height=250)
-    st.info("Select all text in the box above (Ctrl+A or Cmd+A), then copy (Ctrl+C or Cmd+C) to put the results on your clipboard.")
+    # Create a download button for the analysis results
+    st.subheader("Copy Analysis Results")
+    
+    # Create a downloadable text file for the analysis results
+    b64 = base64.b64encode(analysis_text.encode()).decode()
+    href = f'<a href="data:file/txt;base64,{b64}" download="analysis_results.txt" id="download_link" target="_blank">Download Analysis Results as Text File</a>'
+    
+    # Add a clickable button that looks nicer
+    button_html = f"""
+    <style>
+    .download-button {{
+        display: inline-block;
+        padding: 0.5em 1em;
+        background-color: #4CAF50;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        margin: 10px 0;
+    }}
+    .download-button:hover {{
+        background-color: #45a049;
+    }}
+    </style>
+    
+    <a href="data:file/txt;base64,{b64}" download="analysis_results.txt" class="download-button">
+        Copy Analysis Results (Download as Text)
+    </a>
+    """
+    
+    st.markdown(button_html, unsafe_allow_html=True)
+    st.info("Click the button above to download the analysis results as a text file that you can open and copy.")
     
     # Data exploration section
     st.subheader("Merged Data Explorer")
