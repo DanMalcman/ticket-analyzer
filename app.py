@@ -149,7 +149,7 @@ if df_viv is not None and df_fortress is not None:
         display: inline-block;
         padding: 0.5em 1em;
         background-color: #0000FF;
-        color: white;
+        color: black;
         text-align: center;
         text-decoration: none;
         font-size: 16px;
