@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import io
 import base64
-import json
 
 st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
 
@@ -136,36 +135,10 @@ if df_viv is not None and df_fortress is not None:
 כרטיסים ממנוי שלא נכנסו למשחק
 {X_manui_trans}"""
     
-    # Add copy to clipboard button for analysis results
-    st.subheader("Copy Analysis Results")
-    st.text_area("Analysis Results", analysis_text, height=250)
-    
-    # JavaScript for copying to clipboard
-    copy_button_js = """
-    <script>
-    function copyToClipboard() {
-        const textArea = document.querySelector('textarea');
-        textArea.select();
-        document.execCommand('copy');
-        alert('Analysis results copied to clipboard!');
-    }
-    </script>
-    <button onclick="copyToClipboard()">Copy to Clipboard</button>
-    """
-    
-    # Since execCommand is deprecated, using a more modern approach with Streamlit components
-    # Creating a button that sets clipboard data using JavaScript
-    copy_button = st.button("Copy Analysis Results to Clipboard")
-    if copy_button:
-        st.success("Analysis results copied to clipboard!")
-        # This uses st.experimental_set_query_params which is a hack to get JS to run
-        # The proper way would be to use st.components.v1, but that's more complex
-        st.markdown(f"""
-        <textarea id="clipboard-text" style="position: absolute; left: -9999px;">{analysis_text}</textarea>
-        <script>
-            navigator.clipboard.writeText(document.getElementById('clipboard-text').value);
-        </script>
-        """, unsafe_allow_html=True)
+    # Streamlit-friendly way to handle clipboard copying
+    st.subheader("Analysis Results for Copying")
+    st.text_area("Copy this text:", analysis_text, height=250)
+    st.info("Select all text in the box above (Ctrl+A or Cmd+A), then copy (Ctrl+C or Cmd+C) to put the results on your clipboard.")
     
     # Data exploration section
     st.subheader("Merged Data Explorer")
