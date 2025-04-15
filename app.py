@@ -148,7 +148,7 @@ if df_viv is not None and df_fortress is not None:
     .download-button {{
         display: inline-block;
         padding: 0.5em 1em;
-        background-color: #4CAF50;
+        background-color: #0000FF;
         color: white;
         text-align: center;
         text-decoration: none;
