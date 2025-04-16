@@ -6,7 +6,7 @@ import base64
 st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
 
 st.title("Vivenu & Fortress Data Merger")
-st.write("Upload your Vivenu and Fortress CSV files to analyze attendance data.")
+st.write("Upload your Vivenu and Fortress files to analyze attendance data.")
 
 # Define the required columns for each file
 vivenu_required_columns = ['barcode', 'ticketName', 'origin']
@@ -17,12 +17,15 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Vivenu File")
-    uploaded_viv = st.file_uploader("Upload Vivenu file (CSV UTF-8 with BOM)", type=["csv"])
+    uploaded_viv = st.file_uploader("Upload Vivenu file", type=["csv", "xlsx", "xls"])
     
     if uploaded_viv is not None:
         try:
-            # Read CSV with utf-8-sig encoding
-            df_viv = pd.read_csv(uploaded_viv, encoding='utf-8-sig')
+            # Determine file type and read accordingly
+            if uploaded_viv.name.endswith('.csv'):
+                df_viv = pd.read_csv(uploaded_viv)
+            else:
+                df_viv = pd.read_excel(uploaded_viv)
             
             # Check if required columns exist in the Vivenu file
             missing_columns = [col for col in vivenu_required_columns if col not in df_viv.columns]
@@ -42,12 +45,15 @@ with col1:
 
 with col2:
     st.subheader("Fortress File")
-    uploaded_fortress = st.file_uploader("Upload Fortress file (CSV UTF-8 with BOM)", type=["csv"])
+    uploaded_fortress = st.file_uploader("Upload Fortress file", type=["csv", "xlsx", "xls"])
     
     if uploaded_fortress is not None:
         try:
-            # Read CSV with utf-8-sig encoding
-            df_fortress = pd.read_csv(uploaded_fortress, encoding='utf-8-sig')
+            # Determine file type and read accordingly
+            if uploaded_fortress.name.endswith('.csv'):
+                df_fortress = pd.read_csv(uploaded_fortress)
+            else:
+                df_fortress = pd.read_excel(uploaded_fortress)
             
             # Check if required columns exist in the Fortress file
             missing_columns = [col for col in fortress_required_columns if col not in df_fortress.columns]
@@ -132,7 +138,7 @@ if df_viv is not None and df_fortress is not None:
     # Create a download button for the analysis results
     st.subheader("Copy Analysis Results")
     
-    # Create a downloadable text file for the analysis results
+    # Create a downloadable text file for the analysis results with UTF-8-sig encoding
     b64 = base64.b64encode(analysis_text.encode('utf-8-sig')).decode()
     href = f'<a href="data:file/txt;base64,{b64}" download="analysis_results.txt" id="download_link" target="_blank">Download Analysis Results as Text File</a>'
     
@@ -173,11 +179,14 @@ if df_viv is not None and df_fortress is not None:
     # Download options
     st.subheader("Download Options")
     
-    # Function to create a download link for CSV with UTF-8-sig encoding
+    # Modified function to create a download link with UTF-8-sig encoding
     def get_table_download_link(df, filename, link_text):
+        # Use StringIO to create a buffer and write CSV with UTF-8-sig encoding
         csv_buffer = io.StringIO()
         df.to_csv(csv_buffer, index=False, encoding='utf-8-sig')
         csv_str = csv_buffer.getvalue()
+        
+        # Encode the CSV string to base64
         b64 = base64.b64encode(csv_str.encode('utf-8-sig')).decode()
         href = f'<a href="data:file/csv;base64,{b64}" download="{filename}.csv">{link_text}</a>'
         return href
@@ -185,7 +194,7 @@ if df_viv is not None and df_fortress is not None:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(get_table_download_link(df, "merged_data", "Download Merged Data (CSV UTF-8 with BOM)"), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(df, "merged_data", "Download Merged Data (CSV with UTF-8-BOM)"), unsafe_allow_html=True)
     
     with col2:
         download_format = st.selectbox("Download specific segment:", [
@@ -212,15 +221,15 @@ if df_viv is not None and df_fortress is not None:
             download_df = df_X_manui
             filename = "not_entered_subscription_tickets"
         
-        st.markdown(get_table_download_link(download_df, filename, f"Download {download_format} (CSV UTF-8 with BOM)"), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(download_df, filename, f"Download {download_format} (CSV with UTF-8-BOM)"), unsafe_allow_html=True)
 
 else:
     if uploaded_viv is None and uploaded_fortress is None:
-        st.info("Please upload both Vivenu and Fortress CSV files to begin analysis.")
+        st.info("Please upload both Vivenu and Fortress files to begin analysis.")
     elif uploaded_viv is None:
-        st.warning("Vivenu CSV file is missing. Please upload to proceed.")
+        st.warning("Vivenu file is missing. Please upload to proceed.")
     elif uploaded_fortress is None:
-        st.warning("Fortress CSV file is missing. Please upload to proceed.")
+        st.warning("Fortress file is missing. Please upload to proceed.")
     else:
         st.error("There was an error processing one or both files. Please check the error messages above.")
 
