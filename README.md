@@ -25,3 +25,6 @@ This script takes ticket data from the Vivenu ticketing system and entry logs fr
 ## Deployment
 
 This application is deployed on Streamlit.io and can be accessed by authorized Leaan LTD event managers.
+
+## Link for the app
+https://ticket-analyzer-vivenu-fortress.streamlit.app/
