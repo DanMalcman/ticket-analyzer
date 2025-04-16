@@ -2,20 +2,8 @@ import streamlit as st
 import pandas as pd
 import io
 import base64
-from PIL import Image
 
-# Load the logo image to use as both the page icon and displayed logo
-# Replace 'logo.png' with your logo file path
-logo = Image.open('logo.png')
-
-# Set page config with logo as the icon (must be the first Streamlit command)
-st.set_page_config(
-    page_title="Vivenu & Fortress Data Merger", 
-    page_icon=logo,  # Using the logo as the favicon
-    layout="wide"
-)
-
-
+st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
 st.title("Vivenu & Fortress Data Merger")
 st.write("Upload your Vivenu and Fortress files to analyze attendance data.")
 
