@@ -194,7 +194,7 @@ if df_viv is not None and df_fortress is not None:
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(get_table_download_link(df, "merged_data", "Download Merged Data (CSV with UTF-8-BOM)"), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(df, "merged_data", "Download Merged Data"), unsafe_allow_html=True)
     
     with col2:
         download_format = st.selectbox("Download specific segment:", [
@@ -221,7 +221,7 @@ if df_viv is not None and df_fortress is not None:
             download_df = df_X_manui
             filename = "not_entered_subscription_tickets"
         
-        st.markdown(get_table_download_link(download_df, filename, f"Download {download_format} (CSV with UTF-8-BOM)"), unsafe_allow_html=True)
+        st.markdown(get_table_download_link(download_df, filename, f"Download {download_format}"), unsafe_allow_html=True)
 
 else:
     if uploaded_viv is None and uploaded_fortress is None:
