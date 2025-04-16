@@ -7,7 +7,7 @@ This script takes ticket data from the Vivenu ticketing system and entry logs fr
 - Processes both Vivenu ticket exports and Fortress entry logs
 - Analyzes attendance data for regular tickets and subscription tickets
 - Provides key metrics including attendance counts and no-show rates
-- Generates downloadable reports in CSV format with UTF-8-BOM encoding for proper Hebrew text support
+- Generates downloadable reports in CSV format with UTF-8-sig encoding for proper Hebrew text support
 - Offers a user-friendly interface for event managers
 
 ## Usage
