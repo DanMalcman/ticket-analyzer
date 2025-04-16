@@ -2,36 +2,11 @@ import streamlit as st
 import pandas as pd
 import io
 import base64
-import os
-from PIL import Image
 
-# Get the absolute path to the logo file
-logo_path = os.path.join(os.path.dirname(__file__), "assets", "logo.png")
+st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
+st.title("Vivenu & Fortress Data Merger")
+st.write("Upload your Vivenu and Fortress files to analyze attendance data.")
 
-try:
-    # Try to load the logo
-    logo = Image.open(logo_path)
-    
-    # Set page config with emoji as fallback
-    st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
-    
-    # Create columns for layout
-    col1, col2 = st.columns([1, 4])
-    
-    # Display logo
-    with col1:
-        st.image(logo, width=150)
-        
-except Exception as e:
-    # Fallback if logo can't be loaded
-    st.set_page_config(page_title="Vivenu & Fortress Data Merger", page_icon="📊", layout="wide")
-    st.error(f"Could not load logo: {e}")
-
-# Display title
-col1, col2 = st.columns([1, 4])
-with col2:
-    st.title("Vivenu & Fortress Data Merger")
-    st.write("Upload your Vivenu and Fortress files to analyze attendance data.")
 # Define the required columns for each file
 vivenu_required_columns = ['barcode', 'ticketName', 'origin']
 fortress_required_columns = ['Barcode']
